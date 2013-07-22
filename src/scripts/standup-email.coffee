@@ -19,7 +19,7 @@ module.exports = (robot) ->
     if buff = robot.brain.data.tempEmailBuffer?[group]
       postEmail(robot, group, msg.message.user.room, msg, buff)
       delete robot.brain.data.tempEmailBuffer[group]
-    msg.send "OK, I willl send standup logs to #{email_addres}."
+    msg.send "OK, I willl send standup logs to #{email_address}."
 
 
   robot.respond /no standup emails for (.*) *$/i, (msg) ->
@@ -43,11 +43,11 @@ postEmail = (robot, group, room, response, logs) ->
 
     sendmail = nodemailer.createTransport "sendmail",
       path: "/usr/sbin/sendmail"
-  
+
     body = makeBody robot, group, logs
-  
+
     date = new Date(logs[0].time)
-  
+
     mailoptions =  {
       from: process.env.HUBOT_STANDUP_EMAIL_ORIGIN_ADDRESS
       to: emailaddress
