@@ -93,7 +93,7 @@ nextPerson = (robot, room, msg) ->
   if standup.remaining.length == 0
     howlong = calcMinutes(new Date().getTime() - standup.start)
     msg.send "All done! Standup was #{howlong}."
-    robot.emit 'standupLog', standup.group, room, msg, standup.log
+    robot.brain.emit 'standupLog', standup.group, room, msg, standup.log
     delete robot.brain.data.standup[room]
   else
     standup.current = standup.remaining.shift()
