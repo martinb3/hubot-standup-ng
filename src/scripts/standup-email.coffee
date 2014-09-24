@@ -8,7 +8,7 @@
 # doesn't support this.
 #
 module.exports = (robot) ->
-  robot.brain.on 'standupLog', (group, room, response, logs) ->
+  robot.on 'standupLog', (group, room, response, logs) ->
     postEmail robot, group, room, response, logs
 
   robot.respond /email (.*) standup logs? to (.*) *$/i, (msg) ->
@@ -54,7 +54,7 @@ postEmail = (robot, group, room, response, logs) ->
       subject: "Standup logs for #{group} for #{date.toLocaleDateString()}"
       text: body
     }
-  
+
     sendmail.sendMail mailoptions, (error, msg) ->
       if error
         response.send "Posting to the group #{group_id} FAILED: #{msg}"
