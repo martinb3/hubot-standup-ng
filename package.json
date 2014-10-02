@@ -2,7 +2,7 @@
   "author": "Martin Smith",
   "name": "hubot-standup-ng",
   "description": "Next generation standup bot with hubot ala tender, forked from the original by Tatsuhiko Miyagawa.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/martinb3/hubot-standup-ng",
   "repository": {
     "type": "git",
