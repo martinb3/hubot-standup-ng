@@ -1,20 +1,22 @@
 {
-  "author": "Tatsuhiko Miyagawa",
-  "name": "hubot-standup",
-  "description": "Standup bot with hubot ala tender",
-  "version": "0.1.7",
-  "homepage": "https://github.com/miyagawa/hubot-standup",
+  "author": "Martin Smith"
+  "name": "hubot-standup-ng",
+  "description": "Next generation standup bot with hubot ala tender, forked from the original by Tatsuhiko Miyagawa",
+  "version": "0.1",
+  "homepage": "https://github.com/martinb3/hubot-standup",
   "repository": {
     "type": "git",
-    "url": "git://github.com/miyagawa/hubot-standup.git"
+    "url": "git://github.com/martinb3/hubot-standup.git"
   },
   "engines": {
     "node": "> 0.6.0"
   },
   "main": "index.coffee",
   "dependencies": {
-    "coffee-script": "> 1.1.3"
+    "coffee-script": "> 1.1.3",
   },
   "devDependencies": {},
-  "optionalDependencies": {}
+  "optionalDependencies": {
+    "nodemailer": "^1.3.0"
+  }
 }
