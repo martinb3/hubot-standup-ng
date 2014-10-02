@@ -84,11 +84,11 @@ module.exports = (robot) ->
 
   robot.hear /(.*)/, (msg) ->
     current_standup = robot.brain.data.standup?[msg.message.user.room]
-    if current_standup?
+    if msg.message.user.room? && current_standup?
       console.log "Standup log added from #{msg.message.user.name} in #{msg.message.user.room}: -#{msg.message}-"
       robot.brain.data.standup[msg.message.user.room].log.push { message: msg.message, time: new Date().getTime() }
-    else
-      console.log "Heard message from #{msg.message.user.name} in #{msg.message.user.room} but there was no current standup there."
+    #else
+    #  console.log "Heard message from #{msg.message.user.name} in #{msg.message.user.room} but there was no current standup there."
 
 shuffleArrayClone = (array) ->
   cloned = []

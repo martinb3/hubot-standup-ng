@@ -77,7 +77,7 @@ postEmail = (robot, group, room, response, logs) ->
       if error
         response.send "Posting to the group #{group} FAILED - #{error}"
       else
-        response.send "Posting to email #{emailaddress} - #{msg.response}"
+        response.send "Posting to email #{emailaddress}"
 
 getEmailGroup = (robot, group) ->
   robot.brain.data.emailGroups or= {}
