@@ -1,19 +1,19 @@
 {
-  "author": "Martin Smith"
+  "author": "Martin Smith",
   "name": "hubot-standup-ng",
-  "description": "Next generation standup bot with hubot ala tender, forked from the original by Tatsuhiko Miyagawa",
-  "version": "0.1",
-  "homepage": "https://github.com/martinb3/hubot-standup",
+  "description": "Next generation standup bot with hubot ala tender, forked from the original by Tatsuhiko Miyagawa.",
+  "version": "1.0.1",
+  "homepage": "https://github.com/martinb3/hubot-standup-ng",
   "repository": {
     "type": "git",
-    "url": "git://github.com/martinb3/hubot-standup.git"
+    "url": "git://github.com/martinb3/hubot-standup-ng.git"
   },
   "engines": {
     "node": "> 0.6.0"
   },
   "main": "index.coffee",
   "dependencies": {
-    "coffee-script": "> 1.1.3",
+    "coffee-script": "> 1.1.3"
   },
   "devDependencies": {},
   "optionalDependencies": {
