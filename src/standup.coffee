@@ -4,8 +4,13 @@
 
 module.exports = (robot) ->
   robot.respond /(?:cancel|stop) standup *$/i, (msg) ->
-    delete robot.brain.data.standup?[msg.message.user.room]
-    msg.send "Standup cancelled"
+    if !msg.message.user.room?
+      msg.send "I keep track of standups by room. I can't cancel a standup if you don't tell me from a particular room."
+    else if robot.brain.data.standup?[msg.message.user.room]
+      delete robot.brain.data.standup?[msg.message.user.room]
+      msg.send "Standup cancelled for #{msg.message.user.room}"
+    else
+      msg.send "I'm not aware of a standup in progress in #{msg.message.user.room}."
 
   robot.respond /standup for (.*) *$/i, (msg) ->
     room  = msg.message.user.room
@@ -78,9 +83,12 @@ module.exports = (robot) ->
              """
 
   robot.catchAll (msg) ->
-    unless robot.brain.data.standup?[msg.message.user.room]
-      return
-    robot.brain.data.standup[msg.message.user.room].log.push { message: msg.message, time: new Date().getTime() }
+    current_standup = robot.brain.data.standup?[msg.message.user.room]
+    if current_standup?
+      console.log "Standup log added from #{msg.message.user.name} in #{msg.message.user.room}: -#{msg.message}-"
+      robot.brain.data.standup[msg.message.user.room].log.push { message: msg.message, time: new Date().getTime() }
+    else
+      console.log "Saw message from #{msg.message.user.name} in #{msg.message.user.room} but there was no current standup there."
 
 shuffleArrayClone = (array) ->
   cloned = []
@@ -93,7 +101,10 @@ nextPerson = (robot, room, msg) ->
   if standup.remaining.length == 0
     howlong = calcMinutes(new Date().getTime() - standup.start)
     msg.send "All done! Standup was #{howlong}."
-    robot.brain.emit 'standupLog', standup.group, room, msg, standup.log
+    try
+      robot.brain.emit 'standupLog', standup.group, room, msg, standup.log
+    catch
+      console.log "standupLog event failed"
     delete robot.brain.data.standup[room]
   else
     standup.current = standup.remaining.shift()
