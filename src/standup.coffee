@@ -82,13 +82,13 @@ module.exports = (robot) ->
              skip <who> - skip someone when they're not available
              """
 
-  robot.catchAll (msg) ->
+  robot.hear /(.*)/, (msg) ->
     current_standup = robot.brain.data.standup?[msg.message.user.room]
     if current_standup?
       console.log "Standup log added from #{msg.message.user.name} in #{msg.message.user.room}: -#{msg.message}-"
       robot.brain.data.standup[msg.message.user.room].log.push { message: msg.message, time: new Date().getTime() }
     else
-      console.log "Saw message from #{msg.message.user.name} in #{msg.message.user.room} but there was no current standup there."
+      console.log "Heard message from #{msg.message.user.name} in #{msg.message.user.room} but there was no current standup there."
 
 shuffleArrayClone = (array) ->
   cloned = []

@@ -1,6 +1,6 @@
-# hubot-standup
+# hubot-standup-ng
 
-Agile style standup bot for [hubot](https://github.com/github/hubot) ala [tender](https://github.com/markpasc/tender).
+Agile style standup bot for [hubot](https://github.com/github/hubot) ala [tender](https://github.com/markpasc/tender). Forked from [the original](miyagawa/hubot-standup) by miyagawa.
 
 ## How to use
 
@@ -81,7 +81,7 @@ Then run `npm install` and add `hubot-standup` to `external-scripts.json`. E.g.:
 
 By symlinking to `standup-yammer.coffee` in addition, the bot will post the standup archive to Yammer. You need to set a valid Yammer OAuth2 token to `HUBOT_STANDUP_YAMMER_TOKEN` environment variable.
 
-Here's how to get a valid Yammer OAuth2 token with the standard OAuth2 authorization flow. 
+Here's how to get a valid Yammer OAuth2 token with the standard OAuth2 authorization flow.
 
 See [Yammer documentation](https://developer.yammer.com/api/oauth2.html) for more details.
 
@@ -104,6 +104,3 @@ Now set the token to `HUBOT_STANDUP_YAMMER_TOKEN` and Hubot will ask which group
 ## License
 
 MIT License
-
-
-
