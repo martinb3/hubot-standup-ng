@@ -16,7 +16,7 @@ module.exports = (robot) ->
     room  = msg.message.user.room
     group = msg.match[1].trim()
     if robot.brain.data.standup?[room]
-      msg.send "The standup for #{robot.brain.data.standup[room].group} is in progress! Cancel it first with 'cancel standup'"
+      sendWithLog robot, msg, "The standup for #{robot.brain.data.standup[room].group} is in progress! Cancel it first with 'cancel standup'"
       return
 
     attendees = []
@@ -34,10 +34,10 @@ module.exports = (robot) ->
         log: [],
       }
       who = attendees.map((user) -> user.name).join(', ')
-      msg.send "Ok, let's start the standup: #{who}"
+      sendWithLog robot, msg, "Ok, let's start the standup: #{who}"
       nextPerson robot, room, msg
     else
-      msg.send "Oops, can't find anyone with 'a #{group} member' role!"
+      sendWithLog robot, msg, "Oops, can't find anyone with 'a #{group} member' role!"
 
   robot.respond /(?:that\'s it|next(?: person)?|done) *$/i, (msg) ->
     unless robot.brain.data.standup?[msg.message.user.room]
@@ -47,7 +47,7 @@ module.exports = (robot) ->
     else
       nextPerson robot, msg.message.user.room, msg
 
-  robot.respond /(skip|next) (.*) *$/i, (msg) ->
+  robot.respond /(skip|next) (.*?) *$/i, (msg) ->
     unless robot.brain.data.standup?[msg.message.user.room]
       return
 
@@ -61,20 +61,20 @@ module.exports = (robot) ->
         if standup.current.id is skip.id
           nextPerson robot, msg.message.user.room, msg
         else
-          msg.send "Ok, I will skip #{skip.name}"
+          sendWithLog robot, msg, "Ok, I will skip #{skip.name}"
       else
         if standup.current.id is skip.id
           standup.remaining.push skip
           nextPerson robot, msg.message.user.room, msg
         else
-          msg.send "But it is not #{skip.name}'s turn!"
+          sendWithLog robot, msg, "But it is not #{skip.name}'s turn!"
     else if users.length > 1
-      msg.send "Be more specific, I know #{users.length} people named like that: #{(user.name for user in users).join(", ")}"
+      sendWithLog robot, msg, "Be more specific, I know #{users.length} people named like that: #{(user.name for user in users).join(", ")}"
     else
-      msg.send "#{msg.match[2]}? Never heard of 'em"
+      sendWithLog robot, msg, "#{msg.match[2]}? Never heard of 'em"
 
   robot.respond /standup\?? *$/i, (msg) ->
-    msg.send """
+    sendWithLog robot, msg, """
              <who> is a member of <team> - tell hubot who is the member of <team>'s standup
              standup for <team> - start the standup for <team>
              cancel standup - cancel the current standup
@@ -100,7 +100,7 @@ nextPerson = (robot, room, msg) ->
   standup = robot.brain.data.standup[room]
   if standup.remaining.length == 0
     howlong = calcMinutes(new Date().getTime() - standup.start)
-    msg.send "All done! Standup was #{howlong}."
+    sendWithLog robot, msg, "All done! Standup was #{howlong}."
     try
       robot.brain.emit 'standupLog', standup.group, room, msg, standup.log
     catch
@@ -108,7 +108,7 @@ nextPerson = (robot, room, msg) ->
     delete robot.brain.data.standup[room]
   else
     standup.current = standup.remaining.shift()
-    msg.send "#{addressUser(standup.current.name, robot.adapter)} your turn"
+    sendWithLog robot, msg, "#{addressUser(standup.current.name, robot.adapter)} your turn"
 
 addressUser = (name, adapter) ->
   className = adapter.__proto__.constructor.name
@@ -124,3 +124,11 @@ calcMinutes = (milliseconds) ->
     "#{minutes} minutes and #{seconds} seconds"
   else
     "#{seconds} seconds"
+
+sendWithLog = (robot, msg, content) ->
+  msg.send(content)
+  fakemessage =
+     user:
+       name: robot.name
+     text: content
+  robot.brain.data.standup[msg.message.user.room].log.push { message: fakemessage, time: new Date().getTime() }
