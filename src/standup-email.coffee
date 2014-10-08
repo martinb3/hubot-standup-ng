@@ -9,6 +9,10 @@
 #
 module.exports = (robot) ->
   robot.brain.on 'standupLog', (group, room, response, logs) ->
+    if !process.env.HUBOT_STANDUP_NG_NOTIFICATION_EMAIL?
+      console.log "Email standup module received standupLog event, but is disabled"
+      return
+
     try
       postEmail robot, group, room, response, logs
     catch e

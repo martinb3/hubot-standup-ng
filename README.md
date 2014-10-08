@@ -2,6 +2,18 @@
 
 Agile style standup bot for [hubot](https://github.com/github/hubot) ala [tender](https://github.com/markpasc/tender). Forked from [the original](miyagawa/hubot-standup) by miyagawa.
 
+## Configuration
+
+Set one of the following notification methods to true if you'd like to use it:
+
+```
+HUBOT_STANDUP_NG_NOTIFICATION_YAMMER
+```
+
+```
+HUBOT_STANDUP_NG_NOTIFICATION_EMAIL
+```
+
 ## How to use
 
 Create a room (or channel on IRC) for standup (existing one is okay) and invite hubot to the room if necessary.

@@ -12,6 +12,59 @@ module.exports = (robot) ->
     else
       msg.send "I'm not aware of a standup in progress in #{msg.message.user.room}."
 
+  robot.respond /delete standup for (.*) *$/i, (msg) ->
+    if !msg.message.user.room?
+      msg.send "I keep track of standups by room. I can't delete a standup if you don't tell me from a particular room."
+    if robot.brain.data.standup?[msg.message.user.room]
+      # remove the standup log
+      delete robot.brain.data.standup?[msg.message.user.room]
+
+      # remove any buffered email
+      if robot.brain.data.tempEmailBuffer?[group]
+        delete robot.brain.data.tempEmailBuffer[group]
+
+      # remove any email setting
+      if robot.brain.data.emailGroups?[group]
+        delete robot.brain.data.emailGroups[group]
+
+  robot.respond /show standup members for (.*) *$/i, (msg) ->
+    room  = msg.message.user.room
+    group = msg.match[1].trim()
+
+    attendees = []
+    for own key, user of robot.brain.data.users
+      roles = user.roles or [ ]
+      if "a #{group} member" in roles or "an #{group} member" in roles or "a member of #{group}" in roles
+        attendees.push user
+    if attendees.length > 0
+      who = attendees.map((user) -> user.name).join(', ')
+      msg.send "The standup members for #{group} are: #{who}"
+
+  robot.respond /show standups *$/i, (msg) ->
+    groups = []
+    for own key, user of robot.brain.data.users
+      roles = user.roles or [ ]
+      matching_roles = roles.filter((r) -> r.match(/an? (\w+) member/) or r.match(/a member of (\w+)/))
+
+      for r in matching_roles
+
+        a_member = r.match(/an? (\w+) member/)
+        if a_member
+          role_to_add = a_member[1]
+
+        a_member = r.match(/a member of (\w+)/)
+        if a_member
+          role_to_add = a_member[1]
+
+        if role_to_add in groups
+          continue
+
+        groups.push role_to_add
+
+    if groups.length > 0
+      group_list = groups.join(', ')
+      msg.send "The registered standups are: #{group_list}"
+
   robot.respond /standup for (.*) *$/i, (msg) ->
     room  = msg.message.user.room
     group = msg.match[1].trim()
@@ -76,10 +129,15 @@ module.exports = (robot) ->
   robot.respond /standup\?? *$/i, (msg) ->
     sendWithLog robot, msg, """
              <who> is a member of <team> - tell hubot who is the member of <team>'s standup
+             show standup members for <team> - list all of the members of <team>'s standup
+             show standups - list of all standups defined by user roles for any room
              standup for <team> - start the standup for <team>
+             delete standup for <team> - erase all record of standup for <team>
              cancel standup - cancel the current standup
              next - say when your updates for the standup is done
              skip <who> - skip someone when they're not available
+             no standup emails for <team> - disable emails for that team
+             email <team> standup logs to <email address> - set email destination for standup log
              """
 
   robot.hear /(.*)/, (msg) ->

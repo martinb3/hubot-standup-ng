@@ -5,6 +5,9 @@
 
 module.exports = (robot) ->
   robot.brain.on 'standupLog', (group, room, response, logs) ->
+    if !process.env.HUBOT_STANDUP_NG_NOTIFICATION_YAMMER?
+      console.log "Yammer standup module received standupLog event, but is disabled"
+      return
     postYammer robot, group, room, response, logs
 
   robot.respond /post (.*) standup logs? to (\d*) *$/i, (msg) ->
