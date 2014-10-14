@@ -65,7 +65,7 @@ module.exports = (robot) ->
       group_list = groups.join(', ')
       msg.send "The registered standups are: #{group_list}"
 
-  robot.respond /standup for (.*) *$/i, (msg) ->
+  robot.respond /standup for (\S+)\s*$/i, (msg) ->
     room  = msg.message.user.room
     group = msg.match[1].trim()
     if robot.brain.data.standup?[room]
@@ -100,7 +100,7 @@ module.exports = (robot) ->
     else
       nextPerson robot, msg.message.user.room, msg
 
-  robot.respond /(skip|next) (.*?) *$/i, (msg) ->
+  robot.respond /(skip|next) (\S+)\s*$/i, (msg) ->
     unless robot.brain.data.standup?[msg.message.user.room]
       return
 
